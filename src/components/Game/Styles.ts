@@ -22,10 +22,10 @@ export const StreetViewContainer = styled.div`
   flex-direction: column;
 `
 export const ButtonContainer = styled.div`
-  //display:flex;
+  display:flex;
   padding: 0.5rem;
   justify-content: center;
-  display:none;
+  /* display:none; */
 `
 
 export const MapContainer = styled.div`
@@ -41,10 +41,10 @@ export const MapContainer = styled.div`
     width: 50%;
     height: 50%;
   }
-  &:hover ${ButtonContainer}{
+  /* &:hover ${ButtonContainer}{
     display:flex
     
-  }
+  } */
 `
 
 export const Button = styled.button`

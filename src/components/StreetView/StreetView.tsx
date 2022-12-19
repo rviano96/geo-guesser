@@ -52,8 +52,7 @@ const StreetView: React.FC<IStreetView> = ({ lat, lng }) => {
                     panoramaRef.current,
                     {
                         position: address,
-                        //pov: { heading: 0, pitch: 0 },
-                        //zoom: zoomLevel,
+                        showRoadLabels: false,
                         addressControl: false,
                         linksControl: false,
                         panControl: false,
