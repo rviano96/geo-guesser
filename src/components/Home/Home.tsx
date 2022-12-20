@@ -4,13 +4,13 @@ interface IHome {
 
 }
 
-const Home: React.FC<IHome> = ({ }) => {
+const Home: React.FC<IHome> = () => {
     return (
         <Container >
             <Title>
                 Where is it?
             </Title>
-            <img src="../../assets/images/home.svg" />
+            <img src="../../assets/images/home.svg" alt="Home img"/>
             <ButtonContainer>
                 <Button>
                     <ButtonLink to='/game'>

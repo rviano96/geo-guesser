@@ -1,4 +1,4 @@
-import React, { Children, cloneElement, isValidElement, useEffect, useRef, useState } from "react";
+import React, { Children, cloneElement, isValidElement, useCallback, useEffect, useRef, useState } from "react";
 import { Container, GMap } from "./Styles";
 
 type GoogleLatLng = google.maps.LatLng;
@@ -31,38 +31,67 @@ const Map: React.FC<IMap> = ({
     const mapRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<GoogleMap>()
 
-    useEffect((): void => {
-        startMap()
-    }, [map])
 
-    const startMap = (): void => {
+    // const startMap = (): void => {
+    //     if (!map) {
+    //         defaultMapStart()
+    //     }
+    // }
+
+    // const defaultMapStart = (): void => {
+    //     // const defaultAddress = new google.maps.LatLng(0, 0)
+    //     initMap(zoom, center)
+    // }
+    // const initMap = (zoomLevel: number, center: GoogleLatLng): void => {
+    //     if (mapRef.current) {
+    //         setMap(
+    //             new google.maps.Map(mapRef.current,
+    //                 {
+    //                     zoom: zoomLevel,
+    //                     center,
+    //                     mapTypeControl,
+    //                     streetViewControl: false,
+    //                     zoomControl: true,
+    //                     panControl: false,
+    //                     fullscreenControl: false,
+    //                 })
+    //         )
+    //     }
+    // }
+
+    const defaultMapStart = useCallback(() => {
+        // const defaultAddress = new google.maps.LatLng(0, 0)
+        const initMap = (zoomLevel: number, center: GoogleLatLng): void => {
+            if (mapRef.current) {
+                setMap(
+                    new google.maps.Map(mapRef.current,
+                        {
+                            zoom: zoomLevel,
+                            center,
+                            mapTypeControl,
+                            streetViewControl: false,
+                            zoomControl: true,
+                            panControl: false,
+                            fullscreenControl: false,
+                        })
+                )
+            }
+        }
+        initMap(zoom, center)
+    }, [ zoom, center, mapTypeControl])
+
+    const startMap = useCallback(() => {
         if (!map) {
             defaultMapStart()
         }
-    }
+    }, [map, defaultMapStart])
+
+    useEffect((): void => {
+        startMap()
+    }, [startMap])
 
 
-    const defaultMapStart = (): void => {
-        // const defaultAddress = new google.maps.LatLng(0, 0)
-        initMap(zoom, center)
-    }
 
-    const initMap = (zoomLevel: number, center: GoogleLatLng): void => {
-        if (mapRef.current) {
-            setMap(
-                new google.maps.Map(mapRef.current,
-                    {
-                        zoom: zoomLevel,
-                        center,
-                        mapTypeControl,
-                        streetViewControl: false,
-                        zoomControl: true,
-                        panControl: false,
-                        fullscreenControl: false,
-                    })
-            )
-        }
-    }
 
     useEffect(() => {
         if (map) {

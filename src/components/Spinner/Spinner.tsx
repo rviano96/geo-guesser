@@ -1,4 +1,3 @@
-import { ReactElement, useEffect, useState } from "react";
 import { Container, Loading } from "./Styles";
 
 interface ISpinner {

@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import StreetView from "../StreetView";
 import Map from "../Map";
@@ -7,18 +7,18 @@ import Marker from "../Marker";
 import Result from "../Result";
 import { locations } from "../../utils/locations";
 import Spinner from "../Spinner";
-
+// const locations = await randomStreetView.getRandomLocations(3);
 
 interface IGame {
 
 }
 
-const Game: React.FC<IGame> = ({ }) => {
+const Game: React.FC<IGame> = () => {
     const [randomLocation, setRandomLocation] = useState<{ lat: number, lng: number }>()
     const [startTime, setStartTime] = useState(new Date().getTime())
 
     const render = (_status: Status): ReactElement => {
-        return  <Spinner />
+        return <Spinner />
     };
     const [latLng, setLatLng] = useState<google.maps.LatLng>();
     const [showResults, setShowResults] = useState(false)
@@ -43,9 +43,7 @@ const Game: React.FC<IGame> = ({ }) => {
             //get random location
             let location;
             //if game map is all the world, select randmoly from all the locations.
-            if (gameMapId == "01") {
-                const randomId: number = Math.floor(Math.random() * Object.keys(locations).length);
-                // const idx: string = Object.keys(locations)[randomId]
+            if (gameMapId === "01") {
                 const idx: string = '07'
                 location =
                     locations[idx][
@@ -61,9 +59,13 @@ const Game: React.FC<IGame> = ({ }) => {
             }
 
             let data = {
-                lat: parseFloat((location.split(",")[0])),
+                lat: parseFloat((location.split(",")[0])) ,
                 lng: parseFloat(location.split(",")[1]),
             };
+            // let data = {
+            //     lat: (Math.random() * 90) - 90,
+            //     lng: (Math.random() * 180) - 180,
+            // };
             loc.push(data);
         }
         //return just 1 for this first version
@@ -92,7 +94,7 @@ const Game: React.FC<IGame> = ({ }) => {
                         totalTime={new Date().getTime() - startTime} />
                     : <StreetViewContainer>
                         <Wrapper apiKey={''} render={render} >
-                            <StreetView lat={randomLocation?.lat!} lng={randomLocation?.lng!} />
+                            <StreetView lat={randomLocation?.lat!} lng={randomLocation?.lng!} restartGame={restartGame} />
                         </Wrapper>
                         <MapContainer buttonOpened={!!latLng}>
                             {!!latLng &&
