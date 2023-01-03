@@ -1,4 +1,6 @@
 # Whereisit
+### Personal project
+* Goal: Learn how to use react with typescript. 
 
 Geoguessr clone
 
