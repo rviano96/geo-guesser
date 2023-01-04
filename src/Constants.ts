@@ -1,0 +1,5 @@
+export const HOME_PAGE_PATH = '/home'
+export const LOGIN_PAGE_PATH = '/login'
+export const REGISTER_PAGE_PATH = '/register'
+export const BASE_PATH = '/'
+export const GAME_PAGE_PATH = '/game'
