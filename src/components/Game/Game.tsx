@@ -62,10 +62,6 @@ const Game: React.FC<IGame> = () => {
                 lat: parseFloat((location.split(",")[0])) ,
                 lng: parseFloat(location.split(",")[1]),
             };
-            // let data = {
-            //     lat: (Math.random() * 90) - 90,
-            //     lng: (Math.random() * 180) - 180,
-            // };
             loc.push(data);
         }
         //return just 1 for this first version

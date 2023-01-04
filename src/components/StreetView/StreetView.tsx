@@ -12,7 +12,7 @@ type GoogleLatLng = google.maps.LatLng;
 
 
 const StreetView: React.FC<IStreetView> = ({ lat, lng, restartGame }) => {
-
+    //const streetViewService = new google.maps.StreetViewService();
     const panoramaRef = useRef<HTMLDivElement>(null)
     const [panorama, setPanorama] = useState<StreetViewPanorama>()
 
@@ -27,8 +27,6 @@ const StreetView: React.FC<IStreetView> = ({ lat, lng, restartGame }) => {
         const elems = Array.from(document.querySelectorAll('div')).filter(el => el.textContent === 'For development purposes only');
         elems.forEach((elem) => elem.style.display = 'none')
     }
-
-   
 
     const defaultPanoramaStart = useCallback(() => {
         const initPanorama = (zoomLevel: number, address: GoogleLatLng): void => {
@@ -50,7 +48,6 @@ const StreetView: React.FC<IStreetView> = ({ lat, lng, restartGame }) => {
             }
         }
         const defaultAddress = new google.maps.LatLng(lat, lng)
-
         initPanorama(1, defaultAddress)
     }, [lat, lng])
 

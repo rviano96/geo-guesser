@@ -24,8 +24,6 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
         return <h1>{status}</h1>;
     };
 
-
-
     useEffect(() => {
         const computeDistanceInKm = () => {
             const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(selectedPosition, new google.maps.LatLng(realPosition));
@@ -57,17 +55,18 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
             * Use a base point and return this: Base point / km 
             * Use a base point and a timer and return this: ((base point-timer)/km)
         */
-        const scores = [
-            [7000, 1], [2500, 10],
-            [500, 20], [100, 35],
-            [50, 50], [20, 70],
-            [5, 85], [2, 90],]
-        for (let i = 0; i < scores.length; i++) {
-            if (distance > scores[i][0]) {
-                return scores[i][1]
-            }
-        }
-        return 100
+        // const scores = [
+        //     [7000, 1], [2500, 10],
+        //     [500, 20], [100, 35],
+        //     [50, 50], [20, 70],
+        //     [5, 85], [2, 90],]
+        // for (let i = 0; i < scores.length; i++) {
+        //     if (distance > scores[i][0]) {
+        //         return scores[i][1]
+        //     }
+        // }
+        // return 100
+        return distance > 0 ? parseFloat((5000 / Math.log(distance)).toFixed(2)) : 5000
     }
 
     const getPolyLine = (): google.maps.Polyline => {
@@ -125,7 +124,7 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
                     </Points>
                     <BarContainer>
                         <EmptyBar>
-                            <FillBar percent={computePoints(distanceInKm)} />
+                            <FillBar percent={(computePoints(distanceInKm)*100)/5000} />
                         </EmptyBar>
                     </BarContainer>
                     <ButtonContainer>
