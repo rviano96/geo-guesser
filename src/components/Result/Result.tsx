@@ -1,15 +1,18 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
 import Map from "../Map";
 import { BarContainer, BottomContainer, Button, ButtonContainer, Container, Distance, EmptyBar, FillBar, MapContainer, Points, PointsContainer } from "./Styles";
 import Marker from "../Marker";
+import { getDatabase, ref, update } from "firebase/database";
+import { AuthContext } from "../../contexts/AuthContext";
 
 interface IResult {
     selectedPosition: google.maps.LatLng;
     realPosition: { lat: number, lng: number };
     restartGameCB: () => void;
     totalTime: number;
+    gameId: string
 }
 
 const lineSymbol = {
@@ -17,8 +20,11 @@ const lineSymbol = {
     strokeOpacity: 1,
     scale: 2
 };
-const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGameCB, totalTime }) => {
+const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGameCB, totalTime, gameId }) => {
     const [distanceInKm, setDistanceInKm] = useState(0)
+    const [points, setPoints] = useState<number>()
+    const { user } = useContext(AuthContext);
+    const db = getDatabase();
 
     const render = (status: Status): ReactElement => {
         return <h1>{status}</h1>;
@@ -33,7 +39,26 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
             computeDistanceInKm()
     }, [selectedPosition, realPosition])
 
+    useEffect(() => {
+        !!distanceInKm && computePoints(distanceInKm)
+    }, [distanceInKm])
 
+    useEffect(() => {
+        if (!!gameId && !!db && !!points) {
+
+            try {
+                const updates: any = {}
+                updates['users/' + user?.uid + '/games/' + gameId] = {
+                    gameId: gameId,
+                    score: points,
+                }
+                update(ref(db), updates)
+
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        }
+    }, [gameId, db, points, user?.uid])
 
     const formatResult = (distance: number): string => {
         return distance < 0 ? `${distance * 100} m` : `${distance.toFixed(0)} km`
@@ -49,7 +74,7 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
         },]
     }
 
-    const computePoints = (distance: number): number => {
+    const computePoints = (distance: number): void => {
         /*STRATEGIES
             * Use a switch/case or if and return a fixed number based on an interval
             * Use a base point and return this: Base point / km 
@@ -66,7 +91,8 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
         //     }
         // }
         // return 100
-        return distance > 0 ? parseFloat((5000 / Math.log(distance)).toFixed(2)) : 5000
+        const points = distance > 1 ? parseFloat((5000 / Math.log(distance)).toFixed(2)) : 5000
+        setPoints(points ?? 0)
     }
 
     const getPolyLine = (): google.maps.Polyline => {
@@ -120,11 +146,11 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
                         {`You guess was ${formatResult(distanceInKm)} from the correct location.`}
                     </Distance>
                     <Points>
-                        {`You earned ${computePoints(distanceInKm)} ${computePoints(distanceInKm) !== 1 ? 'points' : 'point'}`}
+                        {`You earned ${points} ${points !== 1 ? 'points' : 'point'}`}
                     </Points>
                     <BarContainer>
                         <EmptyBar>
-                            <FillBar percent={(computePoints(distanceInKm)*100)/5000} />
+                            <FillBar percent={(points! * 100) / 5000} />
                         </EmptyBar>
                     </BarContainer>
                     <ButtonContainer>

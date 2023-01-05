@@ -13,7 +13,7 @@ import {
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
 } from 'firebase/auth'
-import { AuthContext, AuthContextModel } from '../context/AuthContext'
+import { AuthContext, AuthContextModel } from '../contexts/AuthContext'
 
 export interface AuthProviderProps {
     children?: ReactNode

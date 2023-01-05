@@ -5,7 +5,7 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from './contexts/AuthContext';
 import Protected from './components/Protected';
 import { BASE_PATH, HOME_PAGE_PATH, GAME_PAGE_PATH, REGISTER_PAGE_PATH, LOGIN_PAGE_PATH } from './Constants';
 

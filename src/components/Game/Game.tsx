@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import StreetView from "../StreetView";
 import Map from "../Map";
@@ -7,16 +7,19 @@ import Marker from "../Marker";
 import Result from "../Result";
 import { locations } from "../../utils/locations";
 import Spinner from "../Spinner";
-// const locations = await randomStreetView.getRandomLocations(3);
-
+import { v4 as uuidv4 } from 'uuid';
+import { getDatabase, ref, set, push } from "firebase/database";
+import { AuthContext } from "../../contexts/AuthContext";
 interface IGame {
 
 }
 
 const Game: React.FC<IGame> = () => {
     const [randomLocation, setRandomLocation] = useState<{ lat: number, lng: number }>()
-    const [startTime, setStartTime] = useState(new Date().getTime())
+    const { user } = useContext(AuthContext);
 
+    const [startTime, setStartTime] = useState(new Date().getTime())
+    const [gameId, setGameId] = useState<string>()
     const render = (_status: Status): ReactElement => {
         return <Spinner />
     };
@@ -59,11 +62,12 @@ const Game: React.FC<IGame> = () => {
             }
 
             let data = {
-                lat: parseFloat((location.split(",")[0])) ,
+                lat: parseFloat((location.split(",")[0])),
                 lng: parseFloat(location.split(",")[1]),
             };
             loc.push(data);
         }
+        setGameId(uuidv4())
         //return just 1 for this first version
         return loc[0];
     }
@@ -71,6 +75,32 @@ const Game: React.FC<IGame> = () => {
     useEffect(() => {
         setRandomLocation(getRandomLocations())
     }, [])
+
+    useEffect(() => {
+        if (!!gameId) {
+            (async () => {
+                try {
+                    const db = getDatabase();
+                    const gameListRef = ref(db, 'games/' + gameId)
+                    const newGameRef = push(gameListRef)
+                    set(newGameRef, {
+                        gameId: gameId,
+                        status: 'started',
+                    }).then(() => {
+                        const gameUserListRef = ref(db, 'users/' + user?.uid + '/games/' + gameId)
+                        const newGameUserRef = push(gameUserListRef)
+                        set(newGameUserRef, {
+                            gameId: gameId,
+                            score: 0,
+                        });
+                    });
+
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            })();
+        }
+    }, [gameId, user?.uid])
 
     const restartGame = () => {
         setLatLng(undefined)
@@ -87,7 +117,8 @@ const Game: React.FC<IGame> = () => {
                         realPosition={{ lat: randomLocation?.lat!, lng: randomLocation?.lng! }}
                         selectedPosition={latLng!}
                         restartGameCB={restartGame}
-                        totalTime={new Date().getTime() - startTime} />
+                        totalTime={new Date().getTime() - startTime}
+                        gameId={gameId!} />
                     : <StreetViewContainer>
                         <Wrapper apiKey={''} render={render} >
                             <StreetView lat={randomLocation?.lat!} lng={randomLocation?.lng!} restartGame={restartGame} />

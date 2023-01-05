@@ -3,7 +3,7 @@ import { Formik, Form, FormikProps } from 'formik'
 import * as Yup from 'yup'
 import Grid from '@mui/material/Unstable_Grid2'
 import { Content, ErrorMessage, SubmitButton, SuccessMessage, TextField, Title, FormContainer } from './Styles'
-import { useAuth } from '../../provider/AuthProvider'
+import { useAuth } from '../../providers/AuthProvider'
 import { useNavigate } from 'react-router-dom';
 import { HOME_PAGE_PATH } from '../../Constants'
 
