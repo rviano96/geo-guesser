@@ -154,6 +154,34 @@ const Register: React.FC = () => {
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                         />
+
+                                    </Grid>
+                                    <Grid
+                                        lg={12}
+                                        md={12}
+                                        sm={12}
+                                        xs={12}
+                                        
+                                    >
+                                        <TextField
+                                            name="email"
+                                            id="email"
+                                            label="Email"
+                                            value={values.email}
+                                            type="email"
+                                            helperText={
+                                                errors.email && touched.email
+                                                    ? errors.email
+                                                    : 'Enter email'
+                                            }
+                                            error={
+                                                errors.email && touched.email
+                                                    ? true
+                                                    : false
+                                            }
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        />
                                     </Grid>
                                     <Grid
                                         lg={12}
@@ -214,34 +242,9 @@ const Register: React.FC = () => {
                                         md={12}
                                         sm={12}
                                         xs={12}
-                                    >
-                                        <TextField
-                                            name="email"
-                                            id="email"
-                                            label="Email"
-                                            value={values.email}
-                                            type="email"
-                                            helperText={
-                                                errors.email && touched.email
-                                                    ? errors.email
-                                                    : 'Enter email'
-                                            }
-                                            error={
-                                                errors.email && touched.email
-                                                    ? true
-                                                    : false
-                                            }
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                        />
-                                    </Grid>
-                                    <Grid
-                                        lg={12}
-                                        md={12}
-                                        sm={12}
-                                        xs={12}
                                         container
                                         justifyContent='center'
+                                        // spacing={1}
                                     >
                                         <SubmitButton
                                             type="submit"

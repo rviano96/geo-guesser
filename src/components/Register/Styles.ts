@@ -21,8 +21,9 @@ export const Content = styled.div`
     box-shadow: 0px 4px 8px 5px rgba(0,0,0,0.2);
 `
 export const TextField = styled(textField)`
+    width: 100%;
     &>*{
-        width: 100%,
+        width: 50%,
         };
 `
 

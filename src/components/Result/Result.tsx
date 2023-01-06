@@ -6,6 +6,7 @@ import { BarContainer, BottomContainer, Button, ButtonContainer, Container, Dist
 import Marker from "../Marker";
 import { getDatabase, ref, update } from "firebase/database";
 import { AuthContext } from "../../contexts/AuthContext";
+import { SELECTED_LOCATION_MARKER, CORRECT_LOCATION_MARKER } from "../../Constants";
 
 interface IResult {
     selectedPosition: google.maps.LatLng;
@@ -20,6 +21,7 @@ const lineSymbol = {
     strokeOpacity: 1,
     scale: 2
 };
+
 const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGameCB, totalTime, gameId }) => {
     const [distanceInKm, setDistanceInKm] = useState(0)
     const [points, setPoints] = useState<number>()
@@ -48,6 +50,10 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
 
             try {
                 const updates: any = {}
+                updates['games/' + gameId] = {
+                    gameId: gameId,
+                    status: "finished",
+                }
                 updates['users/' + user?.uid + '/games/' + gameId] = {
                     gameId: gameId,
                     score: points,
@@ -80,19 +86,18 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
             * Use a base point and return this: Base point / km 
             * Use a base point and a timer and return this: ((base point-timer)/km)
         */
-        // const scores = [
-        //     [7000, 1], [2500, 10],
-        //     [500, 20], [100, 35],
-        //     [50, 50], [20, 70],
-        //     [5, 85], [2, 90],]
-        // for (let i = 0; i < scores.length; i++) {
-        //     if (distance > scores[i][0]) {
-        //         return scores[i][1]
-        //     }
-        // }
-        // return 100
-        const points = distance > 1 ? parseFloat((5000 / Math.log(distance)).toFixed(2)) : 5000
-        setPoints(points ?? 0)
+        const scores = [
+            [7000, 1], [2500, 10],
+            [500, 20], [100, 35],
+            [50, 50], [20, 70],
+            [5, 85], [2, 90],]
+        for (let i = 0; i < scores.length; i++) {
+            if (distance > scores[i][0]) {
+                setPoints(scores[i][1])
+                return
+            }
+        }
+        setPoints(100)
     }
 
     const getPolyLine = (): google.maps.Polyline => {
@@ -135,8 +140,8 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
             <MapContainer>
                 <Wrapper apiKey={''} render={render}>
                     <Map mapTypeControl={false} zoom={4} center={selectedPosition} polyLine={getPolyLine()}>
-                        <Marker position={selectedPosition} icon={image} />
-                        <Marker position={new google.maps.LatLng(realPosition)} />
+                        <Marker position={selectedPosition} icon={image} title={SELECTED_LOCATION_MARKER} />
+                        <Marker position={new google.maps.LatLng(realPosition) } title={CORRECT_LOCATION_MARKER}/>
                     </Map>
                 </Wrapper>
             </MapContainer>
@@ -150,7 +155,7 @@ const Result: React.FC<IResult> = ({ selectedPosition, realPosition, restartGame
                     </Points>
                     <BarContainer>
                         <EmptyBar>
-                            <FillBar percent={(points! * 100) / 5000} />
+                            <FillBar percent={points} />
                         </EmptyBar>
                     </BarContainer>
                     <ButtonContainer>

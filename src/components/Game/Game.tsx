@@ -8,7 +8,7 @@ import Result from "../Result";
 import { locations } from "../../utils/locations";
 import Spinner from "../Spinner";
 import { v4 as uuidv4 } from 'uuid';
-import { getDatabase, ref, set, push } from "firebase/database";
+import { getDatabase, ref, set, child } from "firebase/database";
 import { AuthContext } from "../../contexts/AuthContext";
 interface IGame {
 
@@ -81,15 +81,14 @@ const Game: React.FC<IGame> = () => {
             (async () => {
                 try {
                     const db = getDatabase();
-                    const gameListRef = ref(db, 'games/' + gameId)
-                    const newGameRef = push(gameListRef)
-                    set(newGameRef, {
+                    const dbRef = ref(db)
+                    const gameListRef = child(dbRef, 'games/' + gameId)
+                    set(gameListRef, {
                         gameId: gameId,
                         status: 'started',
                     }).then(() => {
-                        const gameUserListRef = ref(db, 'users/' + user?.uid + '/games/' + gameId)
-                        const newGameUserRef = push(gameUserListRef)
-                        set(newGameUserRef, {
+                        const gameUserListRef = child(dbRef, 'users/' + user?.uid + '/games/' + gameId)
+                        set(gameUserListRef, {
                             gameId: gameId,
                             score: 0,
                         });

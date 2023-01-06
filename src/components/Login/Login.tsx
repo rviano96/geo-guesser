@@ -102,39 +102,16 @@ const Login: React.FC = () => {
                         return (
                             <Form>
                                 <Title>Log In</Title>
-                                <Grid container
+                                <Grid   spacing={1}
+                                        container
                                 >
                                     <Grid
                                         lg={12}
                                         md={12}
                                         sm={12}
                                         xs={12}
-                                    >
-                                        <TextField
-                                            name="password"
-                                            id="password"
-                                            label="Password"
-                                            value={values.password}
-                                            type="password"
-                                            helperText={
-                                                errors.password && touched.password
-                                                    ? 'Required'
-                                                    : ''
-                                            }
-                                            error={
-                                                errors.password && touched.password
-                                                    ? true
-                                                    : false
-                                            }
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                        />
-                                    </Grid>
-                                    <Grid
-                                        lg={12}
-                                        md={12}
-                                        sm={12}
-                                        xs={12}
+                                        spacing={1}
+                                        container
                                     >
                                         <TextField
                                             name="email"
@@ -161,8 +138,37 @@ const Login: React.FC = () => {
                                         md={12}
                                         sm={12}
                                         xs={12}
+                                        spacing={1}
+                                        container
+                                    >
+                                        <TextField
+                                            name="password"
+                                            id="password"
+                                            label="Password"
+                                            value={values.password}
+                                            type="password"
+                                            helperText={
+                                                errors.password && touched.password
+                                                    ? 'Required'
+                                                    : ''
+                                            }
+                                            error={
+                                                errors.password && touched.password
+                                                    ? true
+                                                    : false
+                                            }
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        />
+                                    </Grid>
+                                    <Grid
+                                        lg={12}
+                                        md={12}
+                                        sm={12}
+                                        xs={12}
                                         container
                                         justifyContent='center'
+                                        spacing={0}
                                     >
                                         <SubmitButton
                                             type="submit"
